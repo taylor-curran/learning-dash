@@ -1,6 +1,7 @@
 # imports
 import dash
 import plotly.express as px
+from dash.dependencies import Input, Output
 import pandas as pd
 
 # Core Dash Functionality -> higher-level components that are 
@@ -77,6 +78,24 @@ specification of Markdown.
 Check out their [60 Second Markdown Tutorial](http://commonmark.org/help/)
 if this is your first introduction to Markdown!
 """
+
+# ---- Add Graph with Slider ----
+
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv')
+
+@app.callback(
+    Output('graph-with-slider', figure)
+)
+def update_figure(selected_year):
+    filtered_df = df[df.year == selected_year]
+
+    fig = px.scatter(filtered_df, x="gdpPercap", y="lifeExp", 
+                     size="pop", color="continent", hover_name="country", 
+                     log_x=True, size_max=55)
+    
+    fig.update_layout(transition_duration=500)
+
+    return fig
 
 
 # --- 2 Parts to Every Dash App ---
@@ -245,3 +264,6 @@ def update_output_div(input_value):
 if __name__ == '__main__':
     # Run the Server
     app.run_server(debug=True)
+
+# 35:43
+# https://www.youtube.com/watch?v=FreMhNpddEE&feature=youtu.be&t=818
